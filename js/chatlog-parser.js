@@ -167,7 +167,7 @@ $(document).ready(function() {
                 wrapSpan("grey", line);
         }
 
-        if (lowerLine.includes("diz:") || lowerLine.includes("shouts:")) {
+        if (lowerLine.includes("diz:") || lowerLine.includes("GRITA:")) {
             if (!characterName) {
                 return wrapSpan("white", line);
             }
@@ -176,12 +176,12 @@ $(document).ready(function() {
                 wrapSpan("lightgrey", line);
         }
 
-        if (lowerLine.startsWith("you were frisked by")) {
+        if (lowerLine.startsWith("Você foi revistado por")) {
             return wrapSpan("green", line);
         }
 
         // Description styling
-        if (line.match(/^___Description of .+___$/)) {
+        if (line.match(/^___Descrição de .+___$/)) {
             return wrapSpan("blue", line);
         }
 
@@ -210,9 +210,10 @@ $(document).ready(function() {
             return wrapSpan("green", "[CASHTAP]") + wrapSpan("white", parts[1]);
         }
 
-        if (line.match(/\|------ .+'s Items \d{2}\/[A-Z]{3}\/\d{4} - \d{2}:\d{2}:\d{2} ------\|/)) {
+        if (line.match(/\|------ Inventário de .+'s \d{2}\/[A-Z]{3}\/\d{4} - \d{2}:\d{2}:\d{2} ------\|/)) {
             return wrapSpan("green", line);
         }
+        
 
         if (line.match(/^(?:\[\d{2}:\d{2}:\d{2}\]\s+)?\d+: .+/)) {
             // Skip phone number items, let formatLine handle them
@@ -222,15 +223,11 @@ $(document).ready(function() {
             return wrapSpan("yellow", line);
         }
 
-        if (lowerLine.startsWith("Peso total:")) {
-            return wrapSpan("yellow", line);
-        }
-
         if (lowerLine.startsWith("dinheiro disponível:")) {
             return wrapSpan("green", line);
         }
 
-        if (/Você tem \d+ .+? preso na prisão\./.test(line)) {
+        if (/Você tem \d+ .+? de pena na prisão\./.test(line)) {
             return formatJailTime(line);
         }
         
@@ -267,10 +264,14 @@ $(document).ready(function() {
             const value = match[2];
             return '<span class="blue">' + key + ': </span><span class="white">' + value + '</span>';
         }
-        if (/^\*\* \[PRISON PA\].*\*\*$/.test(line)) {
+        if (/^\*\* \[PRISÃO PA\].*\*\*$/.test(line)) {
             return formatPrisonPA(line);
         }
         if (/\([^\)]+\) Mensagem de [^:]+: .+/.test(line)) {
+            return formatSmsMessage(line);
+        }
+
+        if (/\([^\)]+\) Mensagem para [^:]+: .+/.test(line)) {
             return formatSmsMessage(line);
         }
         if (lowerLine.includes("você definiu seu telefone principal para")) return formatPhoneSet(line);
@@ -282,19 +283,16 @@ $(document).ready(function() {
         if (lowerLine === 'Sua ligação foi atendida.') {
             return wrapSpan('yellow', line);
         }
-        if (lowerLine === 'Você pendurou a ligação.') {
+        if (lowerLine === 'Você perdeu a ligação.') {
             return wrapSpan('white', line);
         }
-        if (lowerLine === 'a outra parte recusou a chamada.') {
-            return wrapSpan('white', line);
-        }
+
         if (lowerLine.startsWith("[info]")) return colorInfoLine(line);
-        if (lowerLine.includes("[ch: vts - vessel traffic service]")) return formatVesselTraffic(line);
         if (/\[[^\]]+ -> [^\]]+\]/.test(line)) return wrapSpan("depColor", line);
         if (line.startsWith("*")) return wrapSpan("me", line);
         if (line.startsWith(">")) return wrapSpan("ame", line);
-        if (lowerLine.includes("(phone) *")) return wrapSpan("me", line);
-        if (lowerLine.includes("whispers") || line.startsWith("(Carro)")) {
+        if (lowerLine.includes("(Celular) *")) return wrapSpan("me", line);
+        if (lowerLine.includes("susurra") || line.startsWith("(Carro)")) {
             return handleWhispers(line);
         }        
         if (lowerLine.includes("diz (celular):")) return handleCellphone(line);
@@ -333,13 +331,35 @@ $(document).ready(function() {
             if (lowerLine.includes("Você agora está mascarado")) {
                 return wrapSpan("green", line);
             }
-        if (lowerLine.includes("Você mostrou seu inventário")) return wrapSpan("green", line);
-        if (lowerLine.includes("você não está mais mascarado")) return wrapSpan("death", line);
         if (lowerLine.includes("você está sendo roubado, use /arob")) return formatRobbery(line);
 
 
         if (line.includes("Você recebeu uma localização de")) {
             return colorLocationLine(line);
+        }
+
+        if (line.includes("Sua ligação foi atendida")) {
+            return wrapSpan("green", line);
+        }
+
+        if (line.includes("Você foi revistado por")) {
+            return wrapSpan("green", line);
+        }
+
+        if (line.includes("Você perdeu a ligação")) {
+            return wrapSpan("death", line);
+        }
+
+        if (line.includes("A outra parte recusou a chamada")) {
+            return wrapSpan("death", line);
+        }
+
+        if (line.includes("Você não está mais mascarado")) {
+            return wrapSpan("death", line);
+        }
+
+        if (line.includes("Você enviou com sucesso sua localização atual")) {
+            return wrapSpan("yellow", line);
         }
 
         if (line.includes("Você agora está mascarado")) {
@@ -357,7 +377,7 @@ $(document).ready(function() {
         if (line.includes("Agora você é membro de")) {
             const parts = line.split("membro de ");
             const factionPart = parts[1].split(" você")[0];
-            return parts[0] + "membro de " + wrapSpan("yellow", factionPart) + " you may need to /switchfactions to set it as your active faction!";
+            return parts[0] + "membro de " + wrapSpan("yellow", factionPart);
         }
 
         if (lowerLine.startsWith("você cortou")) return formatDrugCut(line);
@@ -366,9 +386,10 @@ $(document).ready(function() {
             return formatPropertyRobbery(line);
         }
 
-        if (/Você acabou de usar +?! Você sentirá os efeitos da droga em breve\./.test(line)) {
+        if (/Você acabou de usar .+?! Você sentirá os efeitos da droga em breve\./.test(line)) {
             return formatDrugEffect(line);
         }
+
         if (line.includes("[CASHTAP]")) {
             return formatCashTap(line);
         }
@@ -404,7 +425,7 @@ $(document).ready(function() {
         }
 
         // Inventory header pattern
-        if (line.match(/\|------ .+'s Unid \d{2}\/[A-Z]{3}\/\d{4} - \d{2}:\d{2}:\d{2} ------\|/)) {
+        if (line.match(/\|------ .+'s \d{2}\/[A-Z]{3}\/\d{4} - \d{2}:\d{2}:\d{2} ------\|/)) {
             return wrapSpan("green", line);
         }
 
@@ -434,7 +455,7 @@ $(document).ready(function() {
             return wrapSpan("green", line);
         }
 
-        if (/Você tem \d+ .+? preso na prisão\./.test(line)) {
+        if (/Você tem \d+ .+? de pena na prisão\./.test(line)) {
             return formatJailTime(line);
         }
         
@@ -482,7 +503,7 @@ $(document).ready(function() {
     }
     
     function formatJailTime(line) {
-        const pattern = /(Você tem) (\d+ .+?) (preso na prisão\.)/;
+        const pattern = /(Você tem) (\d+ .+?) (de pena na prisão\.)/;
         const match = line.match(pattern);
         if (match) {
             return `<span class="white">${match[1]} </span><span class="green">${match[2]}</span><span class="white"> ${match[3]}</span>`;
@@ -667,16 +688,6 @@ $(document).ready(function() {
         }
     }
 
-    function formatVesselTraffic(line) {
-        const vesselTrafficPattern = /\*\*\s*\[CH: VTS - Vessel Traffic Service\]/;
-
-        if (vesselTrafficPattern.test(line)) {
-            return `<span class="vesseltraffic">${line}</span>`;
-        }
-
-        return line;
-    }
-
     function formatIntercom(line) {
         return line.replace(
             /\[(.*?) intercom\]: (.*)/i,
@@ -722,6 +733,8 @@ $(document).ready(function() {
             '<span class="green">$5</span>'
         );
     }
+
+    
     
     function formatRobbery(line) {
         return line
@@ -764,15 +777,15 @@ $(document).ready(function() {
     }
     
     function formatDrugEffect(line) {
-        const pattern = /Você acabou de tomar (.+?)! Você sentirá os efeitos da droga em breve\./;
+        const pattern = /Você acabou de usar (.+?)! Você sentirá os efeitos da droga em breve\./;
         const match = line.match(pattern);
     
         if (match) {
-            const drugName = match[1];
-            return `<span class="white">Você acabou de tomar </span><span class="green">${drugName}</span><span class="white">! Você sentirá os efeitos da droga em breve.</span>`;
+            const drugName = match[1]; // Captura o nome da droga
+            return `<span class="white">Você acabou de usar </span><span class="green">${drugName}</span><span class="white">! Você sentirá os efeitos da droga em breve.</span>`;
         }
     
-        return line;
+        return line; // Retorna a linha original caso não combine
     }
     
     function formatPrisonPA(line) {
