@@ -362,6 +362,10 @@ $(document).ready(function() {
             return wrapSpan("yellow", line);
         }
 
+        if (line.includes("[CELULAR] SMS")) {
+            return wrapSpan("yellow", line);
+        }
+
         if (line.includes("Você agora está mascarado")) {
             return wrapSpan("green", line);
         }
@@ -532,6 +536,12 @@ $(document).ready(function() {
     }    
 
     function handleCellphone(line) {
+        return line.startsWith("!") ?
+            wrapSpan('yellow', line.slice(1)) :
+            wrapSpan("white", line);
+    }
+
+    function handleCellphone2(line) {
         return line.startsWith("!") ?
             wrapSpan('yellow', line.slice(1)) :
             wrapSpan("white", line);
