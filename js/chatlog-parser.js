@@ -438,6 +438,15 @@ $(document).ready(function() {
             return wrapSpan("green", line);
         }
 
+        // Equipped weapons header pattern
+        if (line.match(/.+'s entregou para você/)) {
+            return wrapSpan("green", line);
+        }
+        // Equipped weapons header pattern
+        if (line.match(/.+'s te pagou/)) {
+            return wrapSpan("green", line);
+        }
+
         // Inventory item with phone number
         const phoneMatch = line.trim().match(/^(\d+: .+? x\d+ \(.+?\) -) (PH: \d+)$/);
         if (phoneMatch) {
