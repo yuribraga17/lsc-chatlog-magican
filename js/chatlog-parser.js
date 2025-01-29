@@ -292,7 +292,7 @@ $(document).ready(function() {
         if (line.startsWith("*")) return wrapSpan("me", line);
         if (line.startsWith(">")) return wrapSpan("ame", line);
         if (lowerLine.includes("(Celular) *")) return wrapSpan("me", line);
-        if (lowerLine.includes("susurra") || line.startsWith("(Carro)")) {
+        if (lowerLine.includes("sussurra") || line.startsWith("(Carro)")) {
             return handleWhispers(line);
         }        
         if (lowerLine.includes("diz (celular):")) return handleCellphone(line);
