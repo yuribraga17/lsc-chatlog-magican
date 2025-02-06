@@ -32,4 +32,4 @@ Personagem A diz (celular): Olá!
 
 ### Créditos
 
-[@Ulaş Eren Bayraktar](https://github.com/ulasbayraktar) - Criador da versão original do mágico para LS-RP
+[@Ulaş Eren Bayraktar](https://github.com/ulasbayraktar) - Criador da versão original do chatlog para LS-RP
